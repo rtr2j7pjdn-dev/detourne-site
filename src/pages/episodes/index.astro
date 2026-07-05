@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const episodes = (await getCollection('episodes'))
+  .sort((a, b) => b.data.epNumber - a.data.epNumber);
+---
+<Base title="EPISODES — DÉTOURNÉ">
+<section class="dark" style="min-height:100vh;padding-top:140px">
+  <div class="kicker wr in">
+    <span class="num">EP</span><span class="rule"></span>
+    <span class="label">エピソード<span class="label-en">Episodes</span></span>
+  </div>
+  <div class="jr-grid">
+    {episodes.map((e) => (
+      <a class="jr" href={`/episodes/${e.data.slug}/`}>
+        <span class="cat">EP. {String(e.data.epNumber).padStart(2, '0')}{e.data.status === 'draft' ? ' — COMING SOON' : ''}</span>
+        <h4>{e.data.dancerJa}</h4>
+        <span class="date">{e.data.dancerEn}</span>
+      </a>
+    ))}
+  </div>
+</section>
+</Base>

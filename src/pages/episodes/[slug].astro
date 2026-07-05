@@ -1,0 +1,43 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const episodes = await getCollection('episodes');
+  return episodes.map((e) => ({ params: { slug: e.data.slug }, props: { e } }));
+}
+const { e } = Astro.props;
+const epLabel = String(e.data.epNumber).padStart(2, '0');
+---
+<Base title={`EP.${epLabel} ${e.data.dancerJa} — DÉTOURNÉ`}>
+<section class="light" style="min-height:100vh;padding-top:140px">
+  <div class="kicker wr in">
+    <span class="num">{epLabel}</span><span class="rule"></span>
+    <span class="label">{e.data.dancerJa}<span class="label-en">{e.data.dancerEn}</span></span>
+  </div>
+  <div class="ep-grid">
+    <div class="screen">
+      {e.data.youtubeId ? (
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${e.data.youtubeId}`}
+          title={`DÉTOURNÉ EP.${epLabel}`}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      ) : (
+        <div class="placeholder">
+          <span class="ep-num">EP. {epLabel}</span>
+          <span class="ep-note">COMING SOON</span>
+        </div>
+      )}
+    </div>
+    <div class="ep-meta">
+      <ol class="chapters">
+        {e.data.chapters.map((c) => (
+          <li><span class="n">{c.numeral}</span>{c.title}</li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+</Base>

@@ -1,0 +1,109 @@
+---
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import { getCollection } from 'astro:content';
+import { getSingleton } from '../lib/settings';
+
+const episodes = (await getCollection('episodes'))
+  .filter((e) => e.data.status === 'published' || e.data.status === 'draft')
+  .sort((a, b) => b.data.epNumber - a.data.epNumber);
+const latest = episodes[0];
+const journal = (await getCollection('journal'))
+  .filter((j) => j.data.status === 'published')
+  .sort((a, b) => (b.data.date ?? '').localeCompare(a.data.date ?? ''))
+  .slice(0, 3);
+const settings = await getSingleton();
+const epLabel = latest ? String(latest.data.epNumber).padStart(2, '0') : '01';
+---
+<Base intro={true}>
+<section id="hero" class="dark">
+  <div class="logo"><Logo /></div>
+  <p class="copy-1"><span class="nb">拍手の向こう側。</span></p>
+  <p class="copy-2"><span class="nb">舞台の顔。</span><span class="nb">その裏側に、素顔。</span></p>
+  <p class="tagline-jp"><span class="nb">ダンサーの、もう一つの顔を追う</span><span class="nb">シネマティック・メディア。</span></p>
+  <p class="tagline-en">Cinematic media tracing the other face of dancers.</p>
+  <div class="cue" aria-hidden="true"></div>
+</section>
+
+<section id="episodes" class="light">
+  <div class="kicker wr">
+    <span class="num">I</span><span class="rule"></span>
+    <span class="label">最新エピソード<span class="label-en">Latest Episode</span></span>
+  </div>
+  <div class="ep-grid">
+    <div class="screen fr">
+      {latest && latest.data.youtubeId ? (
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${latest.data.youtubeId}`}
+          title={`DÉTOURNÉ EP.${epLabel} ${latest.data.dancerJa}`}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy"
+        ></iframe>
+      ) : (
+        <div class="placeholder">
+          <span class="ep-num">EP. {epLabel}</span>
+          <span class="ep-note">COMING SOON</span>
+        </div>
+      )}
+    </div>
+    <div class="ep-meta fr d1">
+      <h3>{latest ? latest.data.dancerJa : '菅井 円加'}</h3>
+      <p class="role">{latest ? latest.data.dancerEn : 'Madoka Sugai — Principal Dancer'}</p>
+      <ol class="chapters">
+        {(latest ? latest.data.chapters : []).map((c) => (
+          <li><span class="n">{c.numeral}</span>{c.title}</li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="journal" class="dark">
+  <div class="kicker wr">
+    <span class="num">II</span><span class="rule"></span>
+    <span class="label">ジャーナル<span class="label-en">Journal</span></span>
+  </div>
+  <div class="jr-grid">
+    {journal.length > 0 ? journal.map((j, i) => (
+      <a class={`jr fr ${i === 1 ? 'd1' : i === 2 ? 'd2' : ''}`} href={`/journal/${j.data.slug}/`}>
+        <span class="cat">{j.data.category}</span>
+        <h4>{j.data.title}</h4>
+        <span class="date">{j.data.date ?? ''}</span>
+      </a>
+    )) : (
+      <p class="fr" style="color:var(--muted);letter-spacing:.2em;font-size:13px">COMING SOON</p>
+    )}
+  </div>
+</section>
+
+<section id="about" class="light">
+  <div class="kicker wr">
+    <span class="num">III</span><span class="rule"></span>
+    <span class="label">DÉTOURNÉについて<span class="label-en">About</span></span>
+  </div>
+  <div class="about-body fr">
+    <p><span class="nb">DÉTOURNÉ（デトゥルネ）は、</span><span class="nb">舞台の上では見えないダンサーの素顔を、</span><span class="nb">シネマティックな映像で記録する</span><span class="nb">ポートレート・メディアです。</span></p>
+    <p><span class="nb">踊る側と撮る側、</span><span class="nb">両方の視点から</span><span class="nb">ダンサーの「もう一つの顔」を追います。</span></p>
+  </div>
+  <div class="founder fr d1">
+    <p class="about-name">堀 貴文</p>
+    <p class="about-name-en">Takafumi Hori — Founder / Director</p>
+    <div class="cred">
+      PRIX DE LAUSANNE FINALIST<br>
+      K-BALLET TOKYO — FIRST ARTIST<br>
+      TAKAFUMI STUDIO — FOUNDER
+    </div>
+  </div>
+</section>
+
+<section id="partners" class="dark">
+  <div class="kicker wr">
+    <span class="num">IV</span><span class="rule"></span>
+    <span class="label">パートナーシップ<span class="label-en">Partnership</span></span>
+  </div>
+  <p class="lead fr"><span class="nb">ダンサーの物語を、</span><span class="nb">ともに届けませんか。</span><br><span class="nb">ブランドタイアップ・スポンサーシップの</span><span class="nb">ご相談を承ります。</span></p>
+  <p class="lead-en fr d1">For brand partnerships and sponsorship inquiries, we would be delighted to hear from you.</p>
+  <a class="cta fr d2" href={`mailto:${settings.contactEmail ?? 'contact@example.com'}`}>お問い合わせ</a>
+</section>
+</Base>

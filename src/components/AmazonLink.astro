@@ -1,0 +1,21 @@
+---
+import { getSingleton } from '../lib/settings';
+const { url, label } = Astro.props;
+const settings = await getSingleton();
+const tag = settings?.amazonTag ?? '';
+let href = url;
+try {
+  const u = new URL(url);
+  if (tag && u.hostname.includes('amazon')) { u.searchParams.set('tag', tag); href = u.toString(); }
+} catch {}
+---
+<a class="amazon-link" href={href} target="_blank" rel="nofollow sponsored noopener">
+  <span class="amazon-label">{label}</span>
+  <span class="amazon-note">Amazonで見る</span>
+</a>
+<style>
+.amazon-link{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border:1px solid currentColor;padding:16px 22px;margin:28px 0;text-decoration:none;color:inherit;transition:opacity .3s}
+.amazon-link:hover{opacity:.6}
+.amazon-label{font-size:14px;letter-spacing:.12em}
+.amazon-note{font-size:11px;letter-spacing:.24em;color:#8a8a85;white-space:nowrap}
+</style>

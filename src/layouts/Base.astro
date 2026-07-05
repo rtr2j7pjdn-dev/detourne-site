@@ -1,0 +1,61 @@
+---
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+const { title = 'DÉTOURNÉ — ダンサーの、もう一つの顔を追うシネマティック・メディア', description = 'DÉTOURNÉは、ダンサーの素顔をシネマティックに届けるポートレート・メディア。' , intro = false } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<meta name="description" content={description}>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#000000">
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:type" content="website">
+<meta property="og:image" content="/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..500&family=Zen+Old+Mincho:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+{intro && (
+  <div id="intro" aria-hidden="true">
+    <video id="introVideo" muted playsinline preload="auto"></video>
+  </div>
+)}
+<header>
+  <a class="mark" href="/">DÉTOURNÉ</a>
+  <nav aria-label="メイン">
+    <a href="/episodes/">EPISODES</a>
+    <a href="/journal/">JOURNAL</a>
+    <a href="/#about">ABOUT</a>
+    <a href="/#partners">PARTNERS</a>
+  </nav>
+</header>
+<main>
+  <slot />
+</main>
+<footer>
+  <div class="logo"><Logo /></div>
+  <div class="links">
+    <a href="/episodes/">EPISODES</a>
+    <a href="/journal/">JOURNAL</a>
+    <a href="/#about">ABOUT</a>
+    <a href="/#partners">PARTNERS</a>
+    <a href="/privacy/">PRIVACY POLICY</a>
+  </div>
+  <p class="fine">
+    © 2026 DÉTOURNÉ / Takafumi Studio. All rights reserved.<br>
+    本サイトは今後、Amazonのアソシエイトとして適格販売により収入を得る場合があります。詳細はプライバシーポリシーをご覧ください。
+  </p>
+</footer>
+{intro && <script src="../scripts/intro.js"></script>}
+<script src="../scripts/reveal.js"></script>
+</body>
+</html>

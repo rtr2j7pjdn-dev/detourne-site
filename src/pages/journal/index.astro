@@ -1,0 +1,26 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const posts = (await getCollection('journal'))
+  .filter((j) => j.data.status === 'published')
+  .sort((a, b) => (b.data.date ?? '').localeCompare(a.data.date ?? ''));
+---
+<Base title="JOURNAL — DÉTOURNÉ">
+<section class="dark" style="min-height:100vh;padding-top:140px">
+  <div class="kicker wr in">
+    <span class="num">J</span><span class="rule"></span>
+    <span class="label">ジャーナル<span class="label-en">Journal</span></span>
+  </div>
+  <div class="jr-grid">
+    {posts.length > 0 ? posts.map((j) => (
+      <a class="jr" href={`/journal/${j.data.slug}/`}>
+        <span class="cat">{j.data.category}</span>
+        <h4>{j.data.title}</h4>
+        <span class="date">{j.data.date ?? ''}</span>
+      </a>
+    )) : (
+      <p style="color:var(--muted);letter-spacing:.2em;font-size:13px">COMING SOON</p>
+    )}
+  </div>
+</section>
+</Base>

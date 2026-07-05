@@ -1,0 +1,25 @@
+{
+  "name": "detourne-site",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@astrojs/markdoc": "^1.0.6",
+    "@astrojs/react": "^6.0.1",
+    "@astrojs/vercel": "^10.0.8",
+    "@keystatic/astro": "^5.1.0",
+    "@keystatic/core": "^0.5.50",
+    "astro": "^6.4.8",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "overrides": {
+    "vite": "^7.3.2"
+  }
+}
