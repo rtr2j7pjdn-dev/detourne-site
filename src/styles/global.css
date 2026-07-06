@@ -51,7 +51,17 @@
   #hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding-top:120px}
   #hero .logo{width:min(78vw,900px);color:var(--paper);margin-bottom:clamp(36px,6vh,64px)}
   #hero .logo svg{display:block;width:100%;height:auto}
+  /* 和文の改行を文節単位に制御 */
   .nb{display:inline-block}
+  .about-body p,
+  #hero .tagline-jp,
+  #hero .copy-1,
+  #hero .copy-2,
+  #partners .lead{
+    word-break: auto-phrase;
+    overflow-wrap: break-word;
+    line-break: strict;
+  }
   #hero .copy-1,#hero .copy-2{font-size:clamp(19px,2.6vw,28px);letter-spacing:.3em;font-weight:500;line-height:2.2}
   #hero .copy-2{margin-bottom:clamp(26px,4vh,40px)}
   #hero .tagline-jp{font-size:clamp(13px,1.5vw,16px);letter-spacing:.28em;font-weight:400;color:var(--muted)}
