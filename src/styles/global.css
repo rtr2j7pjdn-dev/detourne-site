@@ -52,7 +52,8 @@
   #hero .logo{width:min(78vw,900px);color:var(--paper);margin-bottom:clamp(36px,6vh,64px)}
   #hero .logo svg{display:block;width:100%;height:auto}
   /* 和文の改行を文節単位に制御 */
-  .nb{display:inline-block}
+  /* .nb を nowrap にして文節を1かたまりに＝改行は span 境界のみ（iOS Safari は auto-phrase 非対応のため必須） */
+  .nb{display:inline-block;white-space:nowrap}
   .about-body p,
   #hero .tagline-jp,
   #hero .copy-1,
