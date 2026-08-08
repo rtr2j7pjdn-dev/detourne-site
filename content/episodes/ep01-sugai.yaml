@@ -6,6 +6,8 @@ youtubeId: ''
 publishDate: null
 status: draft
 chapters:
+  - numeral: I
+    title: バッグの中身
   - numeral: II
     title: 食べること
   - numeral: III
