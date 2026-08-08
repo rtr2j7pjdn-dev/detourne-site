@@ -116,6 +116,16 @@
   #partners .about-name-en{color:var(--paper)}
   #partners .cred{color:var(--muted)}
 
+  /* ============ EPISODE BODY ============ */
+  .episode-body{max-width:42em;font-size:15.5px;letter-spacing:.1em;line-height:2.6;margin-top:clamp(60px,9vh,100px)}
+  .episode-body h2{font-family:var(--serif-en);font-style:italic;font-size:clamp(16px,1.8vw,20px);letter-spacing:.2em;font-weight:400;color:var(--muted);margin-top:clamp(70px,10vh,110px);margin-bottom:clamp(24px,3vh,34px)}
+  .episode-body h2:first-child{margin-top:0}
+  .episode-body p{margin-bottom:1.8em}
+  .episode-body img{display:block;width:100%;height:auto;margin:clamp(40px,6vh,70px) 0}
+  .episode-body blockquote{border-left:1px solid currentColor;padding-left:28px;color:var(--ink);margin:clamp(34px,5vh,50px) 0}
+  .episode-body blockquote p:last-child{margin-bottom:0}
+  .episode-body a{color:inherit;text-decoration:underline;text-underline-offset:4px}
+
   /* ============ FOOTER ============ */
   footer{background:var(--black);color:var(--paper);padding:clamp(60px,9vh,100px) clamp(24px,7vw,120px) 42px;text-align:center}
   footer .logo{width:min(52vw,420px);margin:0 auto clamp(36px,6vh,56px);color:var(--paper)}

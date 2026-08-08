@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const episodes = await getCollection('episodes');
@@ -8,6 +8,9 @@ export async function getStaticPaths() {
 }
 const { e } = Astro.props;
 const epLabel = String(e.data.epNumber).padStart(2, '0');
+// 本文未入力のエピソードでは本文セクションごと出さない
+const hasBody = Boolean(e.body && e.body.trim());
+const Body = hasBody ? (await render(e)).Content : null;
 ---
 <Base title={`EP.${epLabel} ${e.data.dancerJa} — DÉTOURNÉ`}>
 <section class="light" style="min-height:100vh;padding-top:140px">
@@ -39,5 +42,10 @@ const epLabel = String(e.data.epNumber).padStart(2, '0');
       </ol>
     </div>
   </div>
+  {Body && (
+    <div class="episode-body">
+      <Body />
+    </div>
+  )}
 </section>
 </Base>

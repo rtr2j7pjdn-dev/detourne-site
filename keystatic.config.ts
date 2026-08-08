@@ -1,4 +1,16 @@
 import { config, collection, singleton, fields } from '@keystatic/core';
+import { block } from '@keystatic/core/content-components';
+
+// markdoc.config.mjs の {% amazon %} タグに対応する編集ブロック。
+// キー名(amazon)と属性名(url / label)はタグ定義と一致させること。
+const amazonBlock = block({
+  label: 'Amazon商品',
+  description: '本文中にAmazon商品リンクを挿入。アソシエイトIDはサイト設定から自動付与',
+  schema: {
+    url: fields.url({ label: '商品URL', validation: { isRequired: true } }),
+    label: fields.text({ label: '表示する商品名', validation: { isRequired: true } }),
+  },
+});
 
 // GitHubモード切替: 環境変数 PUBLIC_KEYSTATIC_REPO に "owner/repo-name" を設定すると
 // 自動でGitHubモードになる（未設定ならローカル編集モード）。
@@ -17,7 +29,7 @@ export default config({
       label: 'Episodes（動画）',
       slugField: 'slug',
       path: 'content/episodes/*',
-      format: { data: 'yaml' },
+      format: { contentField: 'body' },
       schema: {
         slug: fields.slug({ name: { label: 'スラッグ（URL用）' } }),
         epNumber: fields.integer({ label: 'EP番号', validation: { min: 1 } }),
@@ -43,6 +55,12 @@ export default config({
           }),
           { label: '章立て', itemLabel: (p) => `${p.fields.numeral.value} ${p.fields.title.value}` }
         ),
+        body: fields.markdoc({
+          label: '記事本文',
+          description: '未入力ならエピソードページに本文セクションを表示しない。見出し(h2)は英語のセクション名を想定',
+          options: { image: { directory: 'public/episodes', publicPath: '/episodes/' } },
+          components: {},
+        }),
       },
     }),
     journal: collection({
@@ -76,7 +94,7 @@ export default config({
           label: '本文',
           description: 'Amazon商品リンクは / を打って「Amazon商品」ブロックを挿入',
           options: { image: { directory: 'public/journal', publicPath: '/journal/' } },
-          components: {},
+          components: { amazon: amazonBlock },
         }),
       },
     }),
