@@ -14,7 +14,10 @@ const { Content } = await render(j);
   <p style="font-family:var(--serif-en);font-style:italic;font-size:12px;letter-spacing:.24em;color:var(--muted)">{j.data.category} — {j.data.date ?? ''}</p>
   <h1 style="font-size:clamp(24px,3vw,36px);letter-spacing:.18em;font-weight:500;margin:18px 0 16px;line-height:1.9">{j.data.title}</h1>
   <p style="font-size:11px;letter-spacing:.14em;color:var(--muted);border-top:1px solid currentColor;padding-top:14px;margin-bottom:50px">本記事にはアフィリエイトリンクが含まれる場合があります。</p>
-  <div class="journal-body" style="max-width:42em;font-size:15.5px;letter-spacing:.1em;line-height:2.6">
+  {j.data.coverImage && (
+    <img class="journal-cover" src={j.data.coverImage} alt={j.data.title} />
+  )}
+  <div class="journal-body">
     <Content />
   </div>
 </article>

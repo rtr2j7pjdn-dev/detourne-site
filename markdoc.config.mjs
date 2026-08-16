@@ -9,5 +9,27 @@ export default defineMarkdocConfig({
         label: { type: String, required: true },
       },
     },
+    photo: {
+      render: component('./src/components/Photo.astro'),
+      attributes: {
+        src: { type: String, required: true },
+        alt: { type: String },
+        caption: { type: String },
+      },
+    },
+    quote: {
+      render: component('./src/components/PullQuote.astro'),
+      attributes: {
+        text: { type: String, required: true },
+        cite: { type: String },
+      },
+    },
+    youtube: {
+      render: component('./src/components/YouTubeEmbed.astro'),
+      attributes: {
+        id: { type: String, required: true },
+        title: { type: String },
+      },
+    },
   },
 });

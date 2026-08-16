@@ -1,0 +1,12 @@
+---
+const { src, alt, caption } = Astro.props;
+---
+<figure class="ph">
+  <img src={src} alt={alt ?? caption ?? ''} loading="lazy" />
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+<style>
+.ph{margin:clamp(40px,6vh,70px) 0}
+.ph img{display:block;width:100%;height:auto}
+.ph figcaption{margin-top:14px;font-size:11.5px;letter-spacing:.16em;line-height:2;color:#8a8a85}
+</style>

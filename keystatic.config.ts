@@ -12,6 +12,58 @@ const amazonBlock = block({
   },
 });
 
+// 本文中に「/」で呼び出せる挿入ブロック。画像の保存先はコレクションごとに変わるので
+// ディレクトリを引数で受け取る。markdoc.config.mjs のタグ定義と属性名を揃えること。
+const contentBlocks = (directory: string, publicPath: string) => ({
+  photo: block({
+    label: '写真（キャプション付き）',
+    description: '大きく1枚。下に小さな説明文を添えられる',
+    schema: {
+      src: fields.image({
+        label: '写真',
+        directory,
+        publicPath,
+        validation: { isRequired: true },
+      }),
+      alt: fields.text({ label: '画像の説明（目の不自由な方向け・任意）' }),
+      caption: fields.text({ label: 'キャプション（任意）' }),
+    },
+  }),
+  quote: block({
+    label: '大きな引用',
+    description: '発言を大きく見せる。話し手の名前も入れられる',
+    schema: {
+      text: fields.text({ label: '引用文', multiline: true, validation: { isRequired: true } }),
+      cite: fields.text({ label: '話し手・出典（任意）' }),
+    },
+  }),
+  youtube: block({
+    label: 'YouTube動画',
+    description: '動画を埋め込む',
+    schema: {
+      id: fields.text({ label: '動画ID（URLの v= 以降11文字）', validation: { isRequired: true } }),
+      title: fields.text({ label: '動画タイトル（任意）' }),
+    },
+  }),
+});
+
+// エディタで使える書式。未指定の項目に依存しないよう明示的に列挙する。
+const editorOptions = (directory: string, publicPath: string) => ({
+  bold: true,
+  italic: true,
+  strikethrough: false,
+  code: false,
+  codeBlock: false,
+  heading: [2, 3] as const,
+  blockquote: true,
+  orderedList: true,
+  unorderedList: true,
+  table: false,
+  link: true,
+  divider: true,
+  image: { directory, publicPath },
+});
+
 // GitHubモード切替: 環境変数 PUBLIC_KEYSTATIC_REPO に "owner/repo-name" を設定すると
 // 自動でGitHubモードになる（未設定ならローカル編集モード）。
 // 併せてKeystatic GitHub Appの設定が必要: https://keystatic.com/docs/github-mode
@@ -57,9 +109,9 @@ export default config({
         ),
         body: fields.markdoc({
           label: '記事本文',
-          description: '未入力ならエピソードページに本文セクションを表示しない。見出し(h2)は英語のセクション名を想定',
-          options: { image: { directory: 'public/episodes', publicPath: '/episodes/' } },
-          components: {},
+          description: '「/」で写真・引用・動画を挿入。未入力ならページに本文セクションを表示しない',
+          options: editorOptions('public/episodes', '/episodes/'),
+          components: contentBlocks('public/episodes', '/episodes/'),
         }),
       },
     }),
@@ -90,11 +142,17 @@ export default config({
           ],
           defaultValue: 'draft',
         }),
+        coverImage: fields.image({
+          label: 'カバー画像（任意）',
+          description: '記事の一番上に大きく表示される。未設定なら表示しない',
+          directory: 'public/journal',
+          publicPath: '/journal/',
+        }),
         body: fields.markdoc({
           label: '本文',
-          description: 'Amazon商品リンクは / を打って「Amazon商品」ブロックを挿入',
-          options: { image: { directory: 'public/journal', publicPath: '/journal/' } },
-          components: { amazon: amazonBlock },
+          description: '「/」で写真・引用・動画・Amazon商品を挿入',
+          options: editorOptions('public/journal', '/journal/'),
+          components: { ...contentBlocks('public/journal', '/journal/'), amazon: amazonBlock },
         }),
       },
     }),

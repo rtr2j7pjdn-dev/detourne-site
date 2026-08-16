@@ -23,6 +23,7 @@ const journal = defineCollection({
     category: z.string(),
     date: z.coerce.date().nullable().optional().transform((d) => d ? d.toISOString().slice(0,10) : null),
     status: z.enum(['draft', 'published']),
+    coverImage: z.string().nullable().optional(),
   }),
 });
 
