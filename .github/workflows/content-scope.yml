@@ -1,0 +1,75 @@
+name: 変更範囲チェック
+
+# 執筆者からのプルリクエストが、記事フォルダ以外を変更していないか確認する。
+# サイト設定・コード・デザインに手が入っていれば失敗させ、承認時の見落としを防ぐ。
+# オーナー本人のプルリクエストは対象外。
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  scope:
+    name: 記事フォルダ以外への変更を検出
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 変更ファイルを確認
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          ASSOCIATION: ${{ github.event.pull_request.author_association }}
+        run: |
+          set -euo pipefail
+
+          if [ "$ASSOCIATION" = "OWNER" ]; then
+            echo "オーナー（$AUTHOR）のプルリクエストのため、確認を省略します。"
+            exit 0
+          fi
+
+          changed=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+
+          if [ -z "$changed" ]; then
+            echo "変更されたファイルはありません。"
+            exit 0
+          fi
+
+          echo "変更されたファイル:"
+          echo "$changed" | sed 's/^/  /'
+          echo
+
+          outside=""
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              content/journal/*|content/episodes/*|public/journal/*|public/episodes/*) ;;
+              *) outside="${outside}${f}"$'\n' ;;
+            esac
+          done <<< "$changed"
+
+          if [ -n "$outside" ]; then
+            echo "::error::記事フォルダ以外のファイルが変更されています。"
+            echo
+            echo "▼ 許可されていない変更:"
+            printf '%s' "$outside" | sed 's/^/  - /'
+            echo
+            echo "編集できるのは次の場所だけです:"
+            echo "  content/journal/    … Journal の記事"
+            echo "  content/episodes/   … エピソードの本文"
+            echo "  public/journal/     … Journal に載せる画像"
+            echo "  public/episodes/    … エピソードに載せる画像"
+            echo
+            echo "サイト設定・デザイン・コードの変更が必要な場合は、"
+            echo "このプルリクエストからは外し、堀までご相談ください。"
+            exit 1
+          fi
+
+          echo "記事フォルダ内の変更のみです。問題ありません。"
