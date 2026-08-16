@@ -3,3 +3,8 @@ dist/
 .vercel/
 .astro/
 .vercel
+
+# Keystatic GitHubモードの認証情報。絶対にコミットしない
+.env
+.env.*
+!.env.example
