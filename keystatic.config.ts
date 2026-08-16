@@ -89,11 +89,11 @@ export default config({
         dancerEn: fields.text({ label: 'ダンサー名（英語）— 例: Madoka Sugai — Principal Dancer' }),
         youtubeId: fields.text({
           label: 'YouTube動画ID',
-          description: '未入力の間はサムネイル（未設定ならCOMING SOON）を表示。URLのv=以降の11文字',
+          description: '未入力の間はサムネイル（未設定ならCOMING SOON）を表示。動画URLをそのまま貼ってもOK',
         }),
         thumbnail: fields.image({
           label: 'サムネイル画像（任意）',
-          description: '動画IDを入れるまでの間、トップと詳細ページに大きく表示される。16:9推奨',
+          description: '一覧・トップ・詳細に表示。16:9推奨。★JPGかPNGで書き出すこと（TIFFはブラウザで表示できません）',
           directory: 'public/episodes',
           publicPath: '/episodes/',
         }),

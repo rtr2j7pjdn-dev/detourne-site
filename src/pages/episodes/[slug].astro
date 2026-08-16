@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
+import { toYouTubeId } from '../../lib/youtube';
 
 export async function getStaticPaths() {
   const episodes = await getCollection('episodes');
@@ -10,6 +11,7 @@ const { e } = Astro.props;
 const epLabel = String(e.data.epNumber).padStart(2, '0');
 // 本文未入力のエピソードでは本文セクションごと出さない
 const hasBody = Boolean(e.body && e.body.trim());
+const videoId = toYouTubeId(e.data.youtubeId);
 const Body = hasBody ? (await render(e)).Content : null;
 ---
 <Base title={`EP.${epLabel} ${e.data.dancerJa} — DÉTOURNÉ`}>
@@ -20,9 +22,9 @@ const Body = hasBody ? (await render(e)).Content : null;
   </div>
   <div class="ep-grid">
     <div class="screen">
-      {e.data.youtubeId ? (
+      {videoId ? (
         <iframe
-          src={`https://www.youtube-nocookie.com/embed/${e.data.youtubeId}`}
+          src={`https://www.youtube-nocookie.com/embed/${videoId}`}
           title={`DÉTOURNÉ EP.${epLabel}`}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen

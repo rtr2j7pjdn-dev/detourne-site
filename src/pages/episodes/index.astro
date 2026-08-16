@@ -12,8 +12,11 @@ const episodes = (await getCollection('episodes'))
   </div>
   <div class="jr-grid">
     {episodes.map((e) => (
-      <a class="jr" href={`/episodes/${e.data.slug}/`}>
-        <span class="cat">EP. {String(e.data.epNumber).padStart(2, '0')}{e.data.status === 'draft' ? ' — COMING SOON' : ''}</span>
+      <a class="jr ep-card" href={`/episodes/${e.data.slug}/`}>
+        {e.data.thumbnail && (
+          <img class="ep-card-thumb" src={e.data.thumbnail} alt={e.data.dancerJa} loading="lazy" />
+        )}
+        <span class="cat">EP. {String(e.data.epNumber).padStart(2, '0')}</span>
         <h4>{e.data.dancerJa}</h4>
         <span class="date">{e.data.dancerEn}</span>
       </a>

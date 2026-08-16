@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Logo from '../components/Logo.astro';
 import { getCollection } from 'astro:content';
 import { getSingleton } from '../lib/settings';
+import { toYouTubeId } from '../lib/youtube';
 
 const episodes = (await getCollection('episodes'))
   .filter((e) => e.data.status === 'published' || e.data.status === 'draft')
@@ -16,6 +17,7 @@ const settings = await getSingleton();
 const epLabel = latest ? String(latest.data.epNumber).padStart(2, '0') : '01';
 // 本文が書かれているエピソードだけ「テキスト版はこちら」を出す
 const hasStory = Boolean(latest && latest.body && latest.body.trim());
+const latestVideoId = toYouTubeId(latest?.data.youtubeId);
 ---
 <Base intro={true}>
 <section id="hero" class="dark">
@@ -35,9 +37,9 @@ const hasStory = Boolean(latest && latest.body && latest.body.trim());
   <div class="ep-grid">
     <div class="ep-main fr">
       <div class="screen">
-        {latest && latest.data.youtubeId ? (
+        {latestVideoId ? (
           <iframe
-            src={`https://www.youtube-nocookie.com/embed/${latest.data.youtubeId}`}
+            src={`https://www.youtube-nocookie.com/embed/${latestVideoId}`}
             title={`DÉTOURNÉ EP.${epLabel} ${latest.data.dancerJa}`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
