@@ -9,6 +9,7 @@ const episodes = defineCollection({
     dancerJa: z.string(),
     dancerEn: z.string(),
     youtubeId: z.string().optional().default(''),
+    thumbnail: z.string().nullable().optional(),
     publishDate: z.coerce.date().nullable().optional().transform((d) => d ? d.toISOString().slice(0,10) : null),
     status: z.enum(['draft', 'published']),
     chapters: z.array(z.object({ numeral: z.string(), title: z.string() })),

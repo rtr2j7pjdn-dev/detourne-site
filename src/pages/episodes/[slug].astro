@@ -27,6 +27,8 @@ const Body = hasBody ? (await render(e)).Content : null;
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen
         ></iframe>
+      ) : e.data.thumbnail ? (
+        <img class="ep-thumb" src={e.data.thumbnail} alt={`EP.${epLabel} ${e.data.dancerJa}`} />
       ) : (
         <div class="placeholder">
           <span class="ep-num">EP. {epLabel}</span>

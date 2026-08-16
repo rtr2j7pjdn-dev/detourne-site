@@ -37,7 +37,18 @@ const { title = 'DÉTOURNÉ — ダンサーの、もう一つの顔を追うシ
     <a href="/#about">ABOUT</a>
     <a href="/#partners">PARTNERS</a>
   </nav>
+  <button id="menuBtn" class="menu-btn" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobileNav">
+    <span></span><span></span><span></span>
+  </button>
 </header>
+<div id="mobileNav" class="mobile-nav" hidden>
+  <nav aria-label="モバイルメニュー">
+    <a href="/episodes/">EPISODES<span>エピソード</span></a>
+    <a href="/journal/">JOURNAL<span>ジャーナル</span></a>
+    <a href="/#about">ABOUT<span>DÉTOURNÉについて</span></a>
+    <a href="/#partners">PARTNERS<span>パートナーシップ</span></a>
+  </nav>
+</div>
 <main>
   <slot />
 </main>
@@ -57,5 +68,6 @@ const { title = 'DÉTOURNÉ — ダンサーの、もう一つの顔を追うシ
 </footer>
 {intro && <script src="../scripts/intro.js"></script>}
 <script src="../scripts/reveal.js"></script>
+<script src="../scripts/menu.js"></script>
 </body>
 </html>

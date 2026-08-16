@@ -14,6 +14,8 @@ const journal = (await getCollection('journal'))
   .slice(0, 3);
 const settings = await getSingleton();
 const epLabel = latest ? String(latest.data.epNumber).padStart(2, '0') : '01';
+// 本文が書かれているエピソードだけ「テキスト版はこちら」を出す
+const hasStory = Boolean(latest && latest.body && latest.body.trim());
 ---
 <Base intro={true}>
 <section id="hero" class="dark">
@@ -31,20 +33,29 @@ const epLabel = latest ? String(latest.data.epNumber).padStart(2, '0') : '01';
     <span class="label">最新エピソード<span class="label-en">Latest Episode</span></span>
   </div>
   <div class="ep-grid">
-    <div class="screen fr">
-      {latest && latest.data.youtubeId ? (
-        <iframe
-          src={`https://www.youtube-nocookie.com/embed/${latest.data.youtubeId}`}
-          title={`DÉTOURNÉ EP.${epLabel} ${latest.data.dancerJa}`}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-          loading="lazy"
-        ></iframe>
-      ) : (
-        <div class="placeholder">
-          <span class="ep-num">EP. {epLabel}</span>
-          <span class="ep-note">COMING SOON</span>
-        </div>
+    <div class="ep-main fr">
+      <div class="screen">
+        {latest && latest.data.youtubeId ? (
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${latest.data.youtubeId}`}
+            title={`DÉTOURNÉ EP.${epLabel} ${latest.data.dancerJa}`}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        ) : latest && latest.data.thumbnail ? (
+          <img class="ep-thumb" src={latest.data.thumbnail} alt={`EP.${epLabel} ${latest.data.dancerJa}`} />
+        ) : (
+          <div class="placeholder">
+            <span class="ep-num">EP. {epLabel}</span>
+            <span class="ep-note">COMING SOON</span>
+          </div>
+        )}
+      </div>
+      {hasStory && (
+        <a class="story-link" href={`/episodes/${latest.data.slug}/`}>
+          テキスト版はこちら<span class="en">Read the story</span>
+        </a>
       )}
     </div>
     <div class="ep-meta fr d1">
