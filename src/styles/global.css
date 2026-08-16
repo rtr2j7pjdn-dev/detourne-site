@@ -142,6 +142,16 @@
   #partners .about-name-en{color:var(--paper)}
   #partners .cred{color:var(--muted)}
 
+  /* ============ 規約・ポリシー ============ */
+  .legal{max-width:44em}
+  .legal .updated{font-size:12px;color:var(--muted);letter-spacing:.14em}
+  .legal h2{font-size:17px;letter-spacing:.24em;font-weight:500;margin:clamp(38px,5vh,52px) 0 18px}
+  .legal p{margin-bottom:1.4em}
+  .legal ul{margin:0 0 1.6em;padding-left:0;list-style:none}
+  .legal li{position:relative;padding-left:1.4em;margin-bottom:.8em}
+  .legal li::before{content:"・";position:absolute;left:0;color:var(--muted)}
+  .legal .src{color:var(--muted);font-size:.92em}
+
   /* ============ 記事本文（Episodes / Journal 共通） ============ */
   .episode-body,.journal-body{max-width:42em;font-size:15.5px;letter-spacing:.1em;line-height:2.6}
   .episode-body{margin-top:clamp(60px,9vh,100px)}

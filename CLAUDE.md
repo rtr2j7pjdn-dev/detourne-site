@@ -14,6 +14,6 @@
 - イントロ動画: public/DETOURNE-intro.mp4（16:9）+ DETOURNE-intro-9x16.mp4（縦・任意）。リロードで再生、サイト内遷移でスキップ
 
 ## 未完了
-- privacy.astro に解析・Cookie記載を追記してから公開
 - settings の contactEmail が仮値
-- Amazonアソシエイト合格後に amazonTag 入力
+- Amazonアソシエイト合格後に amazonTag 入力＋privacy「アフィリエイト」節を「参加しています」に書き換え
+- 外部サービス（埋め込み・解析）を足したら privacy の「外部送信について」に追記する
