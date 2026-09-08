@@ -1,0 +1,32 @@
+---
+import { toInstagramEmbed } from '../lib/instagram';
+const { url, caption } = Astro.props;
+const src = toInstagramEmbed(url);
+---
+{src ? (
+  <figure class="ig">
+    <div class="frame">
+      <iframe
+        src={src}
+        title={caption ?? 'Instagram'}
+        loading="lazy"
+        scrolling="no"
+        allowtransparency="true"
+        referrerpolicy="strict-origin-when-cross-origin"
+      ></iframe>
+    </div>
+    {caption && <figcaption>{caption}</figcaption>}
+    <a class="fallback" href={url} target="_blank" rel="noopener">Instagramで見る</a>
+  </figure>
+) : (
+  <p class="ig-error">Instagramの投稿URLを認識できませんでした。投稿ページのURLをそのまま貼り付けてください。</p>
+)}
+<style>
+.ig{margin:clamp(40px,6vh,70px) 0}
+.ig .frame{max-width:540px;margin:0 auto}
+.ig iframe{display:block;width:100%;height:640px;border:0;background:transparent}
+.ig figcaption{max-width:540px;margin:14px auto 0;font-size:11.5px;letter-spacing:.16em;line-height:2;color:#8a8a85}
+.ig .fallback{display:block;max-width:540px;margin:10px auto 0;font-family:'Bodoni Moda',serif;font-style:italic;font-size:11px;letter-spacing:.18em;color:#8a8a85;text-decoration:none}
+.ig .fallback:hover{text-decoration:underline;text-underline-offset:4px}
+.ig-error{font-size:12.5px;letter-spacing:.1em;color:#8a8a85;border:1px solid currentColor;padding:14px 18px;margin:2em 0}
+</style>

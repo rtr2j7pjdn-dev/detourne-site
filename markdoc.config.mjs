@@ -31,5 +31,12 @@ export default defineMarkdocConfig({
         title: { type: String },
       },
     },
+    instagram: {
+      render: component('./src/components/InstagramEmbed.astro'),
+      attributes: {
+        url: { type: String, required: true },
+        caption: { type: String },
+      },
+    },
   },
 });

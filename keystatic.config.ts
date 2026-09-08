@@ -45,6 +45,14 @@ const contentBlocks = (directory: string, publicPath: string) => ({
       title: fields.text({ label: '動画タイトル（任意）' }),
     },
   }),
+  instagram: block({
+    label: 'Instagram投稿',
+    description: '投稿のURLを貼ると埋め込まれる。公開アカウントの投稿のみ',
+    schema: {
+      url: fields.url({ label: '投稿のURL', validation: { isRequired: true } }),
+      caption: fields.text({ label: '添える説明（任意）' }),
+    },
+  }),
 });
 
 // エディタで使える書式。未指定の項目に依存しないよう明示的に列挙する。
@@ -115,7 +123,7 @@ export default config({
         ),
         body: fields.markdoc({
           label: '記事本文',
-          description: '「/」で写真・引用・動画を挿入。未入力ならページに本文セクションを表示しない',
+          description: '「/」で写真・引用・動画・Instagramを挿入。未入力ならページに本文セクションを表示しない',
           options: editorOptions('public/episodes', '/episodes/'),
           components: contentBlocks('public/episodes', '/episodes/'),
         }),
@@ -156,7 +164,7 @@ export default config({
         }),
         body: fields.markdoc({
           label: '本文',
-          description: '「/」で写真・引用・動画・Amazon商品を挿入',
+          description: '「/」で写真・引用・動画・Instagram・Amazon商品を挿入',
           options: editorOptions('public/journal', '/journal/'),
           components: { ...contentBlocks('public/journal', '/journal/'), amazon: amazonBlock },
         }),
