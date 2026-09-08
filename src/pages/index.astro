@@ -55,7 +55,7 @@ const latestVideoId = toYouTubeId(latest?.data.youtubeId);
         )}
       </div>
       {hasStory && (
-        <a class="story-link" href={`/episodes/${latest.data.slug}/`}>
+        <a class="story-link" href={`/episodes/${latest.id}/`}>
           テキスト版はこちら<span class="en">Read the story</span>
         </a>
       )}
@@ -79,7 +79,7 @@ const latestVideoId = toYouTubeId(latest?.data.youtubeId);
   </div>
   <div class="jr-grid">
     {journal.length > 0 ? journal.map((j, i) => (
-      <a class={`jr fr ${i === 1 ? 'd1' : i === 2 ? 'd2' : ''}`} href={`/journal/${j.data.slug}/`}>
+      <a class={`jr fr ${i === 1 ? 'd1' : i === 2 ? 'd2' : ''}`} href={`/journal/${j.id}/`}>
         <span class="cat">{j.data.category}</span>
         <h4>{j.data.title}</h4>
         <span class="date">{j.data.date ?? ''}</span>

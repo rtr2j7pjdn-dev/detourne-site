@@ -5,7 +5,7 @@ import { toYouTubeId } from '../../lib/youtube';
 
 export async function getStaticPaths() {
   const episodes = await getCollection('episodes');
-  return episodes.map((e) => ({ params: { slug: e.data.slug }, props: { e } }));
+  return episodes.map((e) => ({ params: { slug: e.id }, props: { e } }));
 }
 const { e } = Astro.props;
 const epLabel = String(e.data.epNumber).padStart(2, '0');

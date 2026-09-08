@@ -12,7 +12,7 @@ const episodes = (await getCollection('episodes'))
   </div>
   <div class="jr-grid">
     {episodes.map((e) => (
-      <a class="jr ep-card" href={`/episodes/${e.data.slug}/`}>
+      <a class="jr ep-card" href={`/episodes/${e.id}/`}>
         {e.data.thumbnail && (
           <img class="ep-card-thumb" src={e.data.thumbnail} alt={e.data.dancerJa} loading="lazy" />
         )}
