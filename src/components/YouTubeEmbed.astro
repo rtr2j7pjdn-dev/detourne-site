@@ -1,10 +1,13 @@
 ---
+import { toYouTubeId } from '../lib/youtube';
 const { id, title } = Astro.props;
+// 「動画ID」欄にURLを丸ごと貼られても壊れないようIDに正規化する
+const videoId = toYouTubeId(id);
 ---
 <figure class="yt">
   <div class="frame">
     <iframe
-      src={`https://www.youtube-nocookie.com/embed/${id}`}
+      src={`https://www.youtube-nocookie.com/embed/${videoId}`}
       title={title ?? 'YouTube'}
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen
