@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 const episodes = (await getCollection('episodes'))
+  .filter((e) => e.data.status === 'published')
   .sort((a, b) => b.data.epNumber - a.data.epNumber);
 ---
 <Base title="EPISODES — DÉTOURNÉ">

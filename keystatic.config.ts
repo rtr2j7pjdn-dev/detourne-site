@@ -90,6 +90,8 @@ export default config({
       slugField: 'slug',
       path: 'content/episodes/*',
       format: { contentField: 'body' },
+      // 一覧で公開状態がひと目で分かるようにする
+      columns: ['dancerJa', 'status'],
       schema: {
         slug: fields.slug({ name: { label: 'スラッグ（URL用）' } }),
         epNumber: fields.integer({ label: 'EP番号', validation: { min: 1 } }),
@@ -134,6 +136,7 @@ export default config({
       slugField: 'slug',
       path: 'content/journal/*',
       format: { contentField: 'body' },
+      columns: ['title', 'status'],
       schema: {
         slug: fields.slug({ name: { label: 'スラッグ（URL用）' } }),
         title: fields.text({ label: 'タイトル' }),

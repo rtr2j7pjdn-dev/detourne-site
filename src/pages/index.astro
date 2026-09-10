@@ -6,7 +6,7 @@ import { getSingleton } from '../lib/settings';
 import { toYouTubeId } from '../lib/youtube';
 
 const episodes = (await getCollection('episodes'))
-  .filter((e) => e.data.status === 'published' || e.data.status === 'draft')
+  .filter((e) => e.data.status === 'published')
   .sort((a, b) => b.data.epNumber - a.data.epNumber);
 const latest = episodes[0];
 const journal = (await getCollection('journal'))
