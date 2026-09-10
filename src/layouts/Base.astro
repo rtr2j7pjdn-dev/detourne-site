@@ -1,7 +1,18 @@
 ---
 import '../styles/global.css';
 import Logo from '../components/Logo.astro';
-const { title = 'DÉTOURNÉ — ダンサーの、もう一つの顔を追うシネマティック・メディア', description = 'DÉTOURNÉは、ダンサーの素顔をシネマティックに届けるポートレート・メディア。' , intro = false } = Astro.props;
+const {
+  title = 'DÉTOURNÉ — ダンサーの、もう一つの顔を追うシネマティック・メディア',
+  description = 'DÉTOURNÉは、ダンサーの素顔をシネマティックに届けるポートレート・メディア。',
+  intro = false,
+  image = '/og.png',
+  type = 'website',
+  jsonLd = null,
+} = Astro.props;
+
+// SNS・検索エンジンは絶対URLを要求するため、site を基準に組み立てる
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
 ---
 <!DOCTYPE html>
 <html lang="ja">
@@ -10,15 +21,22 @@ const { title = 'DÉTOURNÉ — ダンサーの、もう一つの顔を追うシ
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
 <meta name="description" content={description}>
+<link rel="canonical" href={canonical}>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#000000">
+<meta property="og:site_name" content="DÉTOURNÉ">
+<meta property="og:locale" content="ja_JP">
 <meta property="og:title" content={title}>
 <meta property="og:description" content={description}>
-<meta property="og:type" content="website">
-<meta property="og:image" content="/og.png">
+<meta property="og:type" content={type}>
+<meta property="og:url" content={canonical}>
+<meta property="og:image" content={ogImage}>
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="/og.png">
+<meta name="twitter:title" content={title}>
+<meta name="twitter:description" content={description}>
+<meta name="twitter:image" content={ogImage}>
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..500&family=Zen+Old+Mincho:wght@400;500&display=swap" rel="stylesheet">

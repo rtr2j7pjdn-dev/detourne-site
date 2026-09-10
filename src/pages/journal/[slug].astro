@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
+import { toExcerpt } from '../../lib/excerpt';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('journal')).filter((j) => j.data.status === 'published');
@@ -8,8 +9,24 @@ export async function getStaticPaths() {
 }
 const { j } = Astro.props;
 const { Content } = await render(j);
+
+const seoDescription = toExcerpt(j.body, 110) || `${j.data.title} — DÉTOURNÉ Journal`;
+const seoImage = j.data.coverImage ?? '/og.png';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: j.data.title,
+  description: seoDescription,
+  image: new URL(seoImage, Astro.site).href,
+  inLanguage: 'ja',
+  datePublished: j.data.date ?? undefined,
+  articleSection: j.data.category,
+  author: { '@type': 'Person', name: '堀 貴文' },
+  publisher: { '@type': 'Organization', name: 'DÉTOURNÉ' },
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+};
 ---
-<Base title={`${j.data.title} — DÉTOURNÉ Journal`}>
+<Base title={`${j.data.title} — DÉTOURNÉ`} description={seoDescription} image={seoImage} type="article" jsonLd={jsonLd}>
 <article class="light" style="min-height:100vh;padding:140px clamp(24px,7vw,120px) 120px">
   <p style="font-family:var(--serif-en);font-style:italic;font-size:12px;letter-spacing:.24em;color:var(--muted)">{j.data.category} — {j.data.date ?? ''}</p>
   <h1 style="font-size:clamp(24px,3vw,36px);letter-spacing:.18em;font-weight:500;margin:18px 0 16px;line-height:1.9">{j.data.title}</h1>

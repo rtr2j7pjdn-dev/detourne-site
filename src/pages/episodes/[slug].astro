@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
 import { toYouTubeId } from '../../lib/youtube';
+import { toExcerpt } from '../../lib/excerpt';
 
 export async function getStaticPaths() {
   // 下書きのエピソードはページ自体を作らない（＝非公開）
@@ -14,8 +15,30 @@ const epLabel = String(e.data.epNumber).padStart(2, '0');
 const hasBody = Boolean(e.body && e.body.trim());
 const videoId = toYouTubeId(e.data.youtubeId);
 const Body = hasBody ? (await render(e)).Content : null;
+
+// 検索結果・SNS向けの情報。ダンサー名を必ず含める
+const dancerName = e.data.dancerJa.replace(/\s+/g, '');
+const seoTitle = `${e.data.dancerJa}の素顔 — DÉTOURNÉ EP.${epLabel}`;
+const seoDescription = hasBody
+  ? `${dancerName}インタビュー。${toExcerpt(e.body, 90)}`
+  : `${dancerName}（${e.data.dancerEn}）を追うDÉTOURNÉ EP.${epLabel}。舞台の顔、その裏側にある素顔を記録するポートレート・シリーズ。`;
+const seoImage = e.data.thumbnail ?? '/og.png';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: seoTitle,
+  description: seoDescription,
+  image: new URL(seoImage, Astro.site).href,
+  inLanguage: 'ja',
+  datePublished: e.data.publishDate ?? undefined,
+  about: { '@type': 'Person', name: dancerName, alternateName: e.data.dancerEn, jobTitle: 'Ballet Dancer' },
+  author: { '@type': 'Person', name: '堀 貴文' },
+  publisher: { '@type': 'Organization', name: 'DÉTOURNÉ' },
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+};
 ---
-<Base title={`EP.${epLabel} ${e.data.dancerJa} — DÉTOURNÉ`}>
+<Base title={seoTitle} description={seoDescription} image={seoImage} type="article" jsonLd={jsonLd}>
 <section class="light" style="min-height:100vh;padding-top:140px">
   <div class="kicker wr in">
     <span class="num">{epLabel}</span><span class="rule"></span>

@@ -1,3 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /keystatic
+
+Sitemap: https://detourne-site.vercel.app/sitemap-index.xml
