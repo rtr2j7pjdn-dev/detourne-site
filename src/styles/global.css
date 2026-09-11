@@ -22,7 +22,10 @@
 
   /* ============ NAV ============ */
   header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:22px clamp(20px,4vw,56px);mix-blend-mode:difference;color:var(--paper)}
-  header .mark{font-family:var(--serif-en);font-weight:500;font-size:19px;letter-spacing:.42em;text-decoration:none;color:inherit}
+  /* ヘッダーのロゴ。ヒーロー・フッターと同じSVG（Tがポワントシューズ）を使う */
+  header .mark{display:block;width:clamp(118px,13vw,162px);color:inherit;text-decoration:none}
+  header .mark svg{display:block;width:100%;height:auto}
+  header .mark:focus-visible{outline:1px solid currentColor;outline-offset:6px}
   nav{display:flex;gap:clamp(16px,2.6vw,38px)}
   nav a{color:inherit;text-decoration:none;font-size:12px;letter-spacing:.3em;font-family:var(--serif-en);position:relative;padding-bottom:4px}
   nav a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .45s var(--wipe)}
