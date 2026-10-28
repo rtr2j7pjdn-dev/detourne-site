@@ -9,6 +9,17 @@ const episodes = (await getCollection('episodes'))
   .filter((e) => e.data.status === 'published')
   .sort((a, b) => b.data.epNumber - a.data.epNumber);
 const latest = episodes[0];
+// 最新エピソード欄は公開済みエピソードを横スライドで見せる
+const slides = episodes.map((e) => ({
+  id: e.id,
+  label: String(e.data.epNumber).padStart(2, '0'),
+  dancerJa: e.data.dancerJa,
+  dancerEn: e.data.dancerEn,
+  chapters: e.data.chapters ?? [],
+  videoId: toYouTubeId(e.data.youtubeId),
+  thumbnail: e.data.thumbnail ?? null,
+  hasStory: Boolean(e.body && e.body.trim()),
+}));
 const journal = (await getCollection('journal'))
   .filter((j) => j.data.status === 'published')
   .sort((a, b) => (b.data.date ?? '').localeCompare(a.data.date ?? ''))
@@ -34,41 +45,50 @@ const latestVideoId = toYouTubeId(latest?.data.youtubeId);
     <span class="num">I</span><span class="rule"></span>
     <span class="label">最新エピソード<span class="label-en">Latest Episode</span></span>
   </div>
-  <div class="ep-grid">
-    <div class="ep-main fr">
-      <div class="screen">
-        {latestVideoId ? (
-          <iframe
-            src={`https://www.youtube-nocookie.com/embed/${latestVideoId}`}
-            title={`DÉTOURNÉ EP.${epLabel} ${latest.data.dancerJa}`}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-            loading="lazy"
-          ></iframe>
-        ) : latest && latest.data.thumbnail ? (
-          <img class="ep-thumb" src={latest.data.thumbnail} alt={`EP.${epLabel} ${latest.data.dancerJa}`} />
-        ) : (
-          <div class="placeholder">
-            <span class="ep-num">EP. {epLabel}</span>
-            <span class="ep-note">COMING SOON</span>
+  <div class="ep-carousel fr" data-interval="6000">
+    <div class="ep-track">
+      {slides.map((sl, i) => (
+        <div class="ep-slide" data-slide={i}>
+          <div class="ep-grid">
+            <div class="ep-main">
+              <div class="screen" data-video={sl.videoId} data-title={`DÉTOURNÉ EP.${sl.label} ${sl.dancerJa}`}>
+                {sl.thumbnail ? (
+                  <img class="ep-thumb" src={sl.thumbnail} alt={`EP.${sl.label} ${sl.dancerJa}`} loading={i === 0 ? 'eager' : 'lazy'} />
+                ) : (
+                  <div class="placeholder">
+                    <span class="ep-num">EP. {sl.label}</span>
+                    <span class="ep-note">COMING SOON</span>
+                  </div>
+                )}
+                {sl.videoId && <button class="ep-play" type="button" aria-label={`EP.${sl.label} ${sl.dancerJa} の動画を再生`}></button>}
+              </div>
+              {sl.hasStory && (
+                <a class="story-link" href={`/episodes/${sl.id}/`}>
+                  テキスト版はこちら<span class="en">Read the story</span>
+                </a>
+              )}
+            </div>
+            <div class="ep-meta">
+              <h3>{sl.dancerJa}</h3>
+              <p class="role">{sl.dancerEn}</p>
+              <ol class="chapters">
+                {sl.chapters.map((c) => (
+                  <li><span class="n">{c.numeral}</span>{c.title}</li>
+                ))}
+              </ol>
+            </div>
           </div>
-        )}
-      </div>
-      {hasStory && (
-        <a class="story-link" href={`/episodes/${latest.id}/`}>
-          テキスト版はこちら<span class="en">Read the story</span>
-        </a>
-      )}
+        </div>
+      ))}
     </div>
-    <div class="ep-meta fr d1">
-      <h3>{latest ? latest.data.dancerJa : '菅井 円加'}</h3>
-      <p class="role">{latest ? latest.data.dancerEn : 'Madoka Sugai — Principal Dancer'}</p>
-      <ol class="chapters">
-        {(latest ? latest.data.chapters : []).map((c) => (
-          <li><span class="n">{c.numeral}</span>{c.title}</li>
+    {slides.length > 1 && (
+      <div class="ep-dots" role="tablist" aria-label="エピソードの切り替え">
+        {slides.map((sl, i) => (
+          <button class="ep-dot" type="button" role="tab" data-dot={i}
+            aria-label={`EP.${sl.label} ${sl.dancerJa}`}><span class="bar"></span></button>
         ))}
-      </ol>
-    </div>
+      </div>
+    )}
   </div>
 </section>
 
