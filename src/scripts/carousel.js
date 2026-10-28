@@ -1,6 +1,6 @@
 /* 最新エピソード欄の横スライド。
-   - 動画はアクティブなスライドにだけ差し込む（YouTubeの読み込みを1本に抑える）
-   - 自動送りは、ホバー・キーボード操作・動画再生中・タブ非表示のあいだ止める
+   - 動画は再生ボタンを押したときだけ読み込む（6秒ごとに読み直さないため）
+   - 自動送りは「停止理由」を個別に持ち、全部が解除されたときだけ再開する
    - prefers-reduced-motion では自動送りもスライドもしない */
 var root = document.querySelector('.ep-carousel');
 
@@ -10,9 +10,15 @@ if (root) {
   var dots = Array.prototype.slice.call(root.querySelectorAll('.ep-dot'));
   var interval = parseInt(root.getAttribute('data-interval'), 10) || 6000;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canHover = window.matchMedia('(hover: hover)').matches;
   var index = 0;
   var timer = null;
-  var held = false; // 再生中などで自動送りを止めている状態
+
+  // 停止理由。ひとつでも立っていれば自動送りを止める
+  var holds = { hover: false, focus: false, playing: false, hidden: false };
+  var isHeld = function () {
+    return holds.hover || holds.focus || holds.playing || holds.hidden;
+  };
 
   root.style.setProperty('--ep-interval', interval + 'ms');
 
@@ -37,20 +43,39 @@ if (root) {
     screen.classList.remove('is-playing');
   };
 
+  var sync = function () {
+    if (isHeld()) {
+      if (timer) { clearInterval(timer); timer = null; }
+    } else if (!timer && !reduced && slides.length > 1) {
+      timer = setInterval(function () { goTo(index + 1); }, interval);
+    }
+    var bar = dots[index] && dots[index].querySelector('.bar');
+    if (bar) bar.style.animationPlayState = isHeld() ? 'paused' : 'running';
+  };
+
+  var setHold = function (name, on) {
+    if (holds[name] === on) return;
+    holds[name] = on;
+    sync();
+  };
+
   var apply = function () {
     track.style.transform = 'translateX(' + (-index * 100) + '%)';
     slides.forEach(function (s, i) {
       var on = i === index;
       s.classList.toggle('is-active', on);
       s.setAttribute('aria-hidden', on ? 'false' : 'true');
-      if (on) { s.removeAttribute('inert'); }
+      if (on) s.removeAttribute('inert');
       else { s.setAttribute('inert', ''); unmountVideo(s); }
     });
     dots.forEach(function (d, i) {
       d.classList.toggle('is-active', i === index);
       d.setAttribute('aria-selected', i === index ? 'true' : 'false');
     });
+    // 再生中のスライドが残っていなければ再生停止扱いに戻す
+    if (!root.querySelector('.screen.is-playing')) holds.playing = false;
     restartProgress();
+    sync();
   };
 
   var restartProgress = function () {
@@ -59,7 +84,6 @@ if (root) {
     bar.style.animation = 'none';
     void bar.offsetWidth; // 強制リフローでアニメーションを頭から
     bar.style.animation = '';
-    bar.style.animationPlayState = held ? 'paused' : 'running';
   };
 
   var goTo = function (i) {
@@ -67,53 +91,42 @@ if (root) {
     apply();
   };
 
-  var stop = function () { if (timer) { clearInterval(timer); timer = null; } };
-
-  var start = function () {
-    stop();
-    if (reduced || slides.length < 2 || held) return;
-    timer = setInterval(function () { goTo(index + 1); }, interval);
-  };
-
-  var hold = function (on) {
-    held = on;
-    var bar = dots[index] && dots[index].querySelector('.bar');
-    if (bar) bar.style.animationPlayState = on ? 'paused' : 'running';
-    if (on) stop(); else start();
-  };
-
   dots.forEach(function (d, i) {
-    d.addEventListener('click', function () { goTo(i); hold(false); });
+    d.addEventListener('click', function () { goTo(i); });
   });
 
-  // 再生ボタン：動画を前面に出し、自動送りを止める
   root.querySelectorAll('.ep-play').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var screen = btn.closest('.screen');
       if (!screen) return;
       screen.classList.add('is-playing');
       mountVideo(btn.closest('.ep-slide'));
-      hold(true); // 見ているあいだは勝手に送らない
+      setHold('playing', true); // 見ているあいだは勝手に送らない
     });
   });
 
-  root.addEventListener('mouseenter', function () { hold(true); });
-  root.addEventListener('mouseleave', function () {
-    var inside = root.querySelector('.screen.is-playing');
-    if (!inside) hold(false);
-  });
-  root.addEventListener('focusin', function () { hold(true); });
+  // ホバーで止めるのはマウスのある環境だけ。
+  // タッチ端末では mouseenter だけ発火して mouseleave が来ず、止まったままになる
+  if (canHover) {
+    root.addEventListener('mouseenter', function () { setHold('hover', true); });
+    root.addEventListener('mouseleave', function () { setHold('hover', false); });
+  }
 
-  // 動画(iframe)にフォーカスが移ったら再生中とみなして止める
+  // フォーカスは入ったら止め、出たら必ず戻す
+  root.addEventListener('focusin', function () { setHold('focus', true); });
+  root.addEventListener('focusout', function (e) {
+    if (!root.contains(e.relatedTarget)) setHold('focus', false);
+  });
+
+  // 動画(iframe)にフォーカスが移ったら再生中とみなす
   window.addEventListener('blur', function () {
     var el = document.activeElement;
-    if (el && el.tagName === 'IFRAME' && root.contains(el)) hold(true);
+    if (el && el.tagName === 'IFRAME' && root.contains(el)) setHold('playing', true);
   });
 
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) stop(); else if (!held) start();
+    setHold('hidden', document.hidden);
   });
 
   apply();
-  start();
 }
