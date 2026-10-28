@@ -45,50 +45,41 @@ const latestVideoId = toYouTubeId(latest?.data.youtubeId);
     <span class="num">I</span><span class="rule"></span>
     <span class="label">最新エピソード<span class="label-en">Latest Episode</span></span>
   </div>
-  <div class="ep-carousel fr" data-interval="6000">
-    <div class="ep-track">
-      {slides.map((sl, i) => (
-        <div class="ep-slide" data-slide={i}>
-          <div class="ep-grid">
-            <div class="ep-main">
-              <div class="screen" data-video={sl.videoId} data-title={`DÉTOURNÉ EP.${sl.label} ${sl.dancerJa}`}>
-                {sl.thumbnail ? (
-                  <img class="ep-thumb" src={sl.thumbnail} alt={`EP.${sl.label} ${sl.dancerJa}`} loading={i === 0 ? 'eager' : 'lazy'} />
-                ) : (
-                  <div class="placeholder">
-                    <span class="ep-num">EP. {sl.label}</span>
-                    <span class="ep-note">COMING SOON</span>
-                  </div>
-                )}
-                {sl.videoId && <button class="ep-play" type="button" aria-label={`EP.${sl.label} ${sl.dancerJa} の動画を再生`}></button>}
-              </div>
-              {sl.hasStory && (
-                <a class="story-link" href={`/episodes/${sl.id}/`}>
-                  テキスト版はこちら<span class="en">Read the story</span>
-                </a>
+  <div class="ep-list">
+    {slides.map((sl, i) => (
+      <article class={`ep-row fr ${i > 0 ? 'd1' : ''}`}>
+        <div class="ep-grid">
+          <div class="ep-main">
+            <div class="screen" data-video={sl.videoId} data-title={`DÉTOURNÉ EP.${sl.label} ${sl.dancerJa}`}>
+              {sl.thumbnail ? (
+                <img class="ep-thumb" src={sl.thumbnail} alt={`EP.${sl.label} ${sl.dancerJa}`} loading={i === 0 ? 'eager' : 'lazy'} />
+              ) : (
+                <div class="placeholder">
+                  <span class="ep-num">EP. {sl.label}</span>
+                  <span class="ep-note">COMING SOON</span>
+                </div>
               )}
+              {sl.videoId && <button class="ep-play" type="button" aria-label={`EP.${sl.label} ${sl.dancerJa} の動画を再生`}></button>}
             </div>
-            <div class="ep-meta">
-              <h3>{sl.dancerJa}</h3>
-              <p class="role">{sl.dancerEn}</p>
-              <ol class="chapters">
-                {sl.chapters.map((c) => (
-                  <li><span class="n">{c.numeral}</span>{c.title}</li>
-                ))}
-              </ol>
-            </div>
+            {sl.hasStory && (
+              <a class="story-link" href={`/episodes/${sl.id}/`}>
+                テキスト版はこちら<span class="en">Read the story</span>
+              </a>
+            )}
+          </div>
+          <div class="ep-meta">
+            <span class="ep-label">EP. {sl.label}</span>
+            <h3>{sl.dancerJa}</h3>
+            <p class="role">{sl.dancerEn}</p>
+            <ol class="chapters">
+              {sl.chapters.map((c) => (
+                <li><span class="n">{c.numeral}</span>{c.title}</li>
+              ))}
+            </ol>
           </div>
         </div>
-      ))}
-    </div>
-    {slides.length > 1 && (
-      <div class="ep-dots" role="tablist" aria-label="エピソードの切り替え">
-        {slides.map((sl, i) => (
-          <button class="ep-dot" type="button" role="tab" data-dot={i}
-            aria-label={`EP.${sl.label} ${sl.dancerJa}`}><span class="bar"></span></button>
-        ))}
-      </div>
-    )}
+      </article>
+    ))}
   </div>
 </section>
 
